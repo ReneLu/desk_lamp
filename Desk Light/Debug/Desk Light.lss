@@ -19,7 +19,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 000009f3  00000000  00000000  00002753  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000008dd  00000000  00000000  00003146  2**0
+  8 .debug_line   000008db  00000000  00000000  00003146  2**0
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  00000394  00000000  00000000  00003a24  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -757,6 +757,7 @@ int main(void)
      3ea:	c9 de       	rcall	.-622    	; 0x17e <timer_init>
     int0_init();
      3ec:	d3 de       	rcall	.-602    	; 0x194 <int0_init>
+#ifdef DEBUG
     printf_init(BAUD, F_CPU);
      3ee:	a1 2c       	mov	r10, r1
      3f0:	0f 2e       	mov	r0, r31
@@ -781,6 +782,7 @@ int main(void)
      416:	80 e0       	ldi	r24, 0x00	; 0
      418:	90 e0       	ldi	r25, 0x00	; 0
      41a:	2e de       	rcall	.-932    	; 0x78 <printf_init>
+#endif
     
     for(uint8_t i = 0; i < STRIP_LEN; i++) {
         led[i].r=255;led[i].g=100;led[i].b=0;
@@ -793,10 +795,10 @@ int main(void)
      428:	80 83       	st	Z, r24
      42a:	18 82       	st	Y, r1
      42c:	23 96       	adiw	r28, 0x03	; 3
-    ioinit();
-    timer_init();
     int0_init();
+#ifdef DEBUG
     printf_init(BAUD, F_CPU);
+#endif
     
     for(uint8_t i = 0; i < STRIP_LEN; i++) {
      42e:	c8 15       	cp	r28, r8
@@ -815,7 +817,7 @@ int main(void)
     sei();
      43c:	78 94       	sei
 
-    printf("Hello World!\n");
+    PRINTF("Hello World!\n");
      43e:	82 e7       	ldi	r24, 0x72	; 114
      440:	90 e0       	ldi	r25, 0x00	; 0
      442:	a3 d4       	rcall	.+2374   	; 0xd8a <puts>
@@ -831,11 +833,11 @@ int main(void)
                 if (brightness > 1)
                     brightness = 0;
                 set_light(brightness);
-                printf("New Brightness %i\n", (100*brightness));
+                PRINTF("New Brightness %i\n", (100*brightness));
      446:	cf e7       	ldi	r28, 0x7F	; 127
      448:	d0 e0       	ldi	r29, 0x00	; 0
 
-    printf("Hello World!\n");
+    PRINTF("Hello World!\n");
 
     while(1)
     {     
@@ -930,7 +932,7 @@ int main(void)
      4ec:	80 91 70 00 	lds	r24, 0x0070	; 0x800070 <brightness+0x2>
      4f0:	90 91 71 00 	lds	r25, 0x0071	; 0x800071 <brightness+0x3>
      4f4:	56 de       	rcall	.-852    	; 0x1a2 <set_light>
-                printf("New Brightness %i\n", (100*brightness));
+                PRINTF("New Brightness %i\n", (100*brightness));
      4f6:	20 e0       	ldi	r18, 0x00	; 0
      4f8:	30 e0       	ldi	r19, 0x00	; 0
      4fa:	48 ec       	ldi	r20, 0xC8	; 200
@@ -1145,7 +1147,7 @@ ISR(INT0_vect)
     if (TOUCH_PIN & (1 << TOUCH_PIN_NR)) { // Rising Edge Interrupt
      6b8:	82 9b       	sbis	0x10, 2	; 16
      6ba:	46 c0       	rjmp	.+140    	; 0x748 <__vector_1+0xc2>
-        printf("Rising at %d\n", g_millisecs);
+        PRINTF("Rising at %d\n", g_millisecs);
      6bc:	80 91 d9 00 	lds	r24, 0x00D9	; 0x8000d9 <g_millisecs>
      6c0:	90 91 da 00 	lds	r25, 0x00DA	; 0x8000da <g_millisecs+0x1>
      6c4:	20 91 db 00 	lds	r18, 0x00DB	; 0x8000db <g_millisecs+0x2>
@@ -1194,7 +1196,7 @@ ISR(INT0_vect)
      744:	8d bf       	out	0x3d, r24	; 61
      746:	bc c0       	rjmp	.+376    	; 0x8c0 <__vector_1+0x23a>
     } else {        // Falling Edge Interrupt
-        printf("Falling at %d\n", g_millisecs);
+        PRINTF("Falling at %d\n", g_millisecs);
      748:	80 91 d9 00 	lds	r24, 0x00D9	; 0x8000d9 <g_millisecs>
      74c:	90 91 da 00 	lds	r25, 0x00DA	; 0x8000da <g_millisecs+0x1>
      750:	20 91 db 00 	lds	r18, 0x00DB	; 0x8000db <g_millisecs+0x2>
@@ -1216,7 +1218,7 @@ ISR(INT0_vect)
      77c:	9f 93       	push	r25
      77e:	8f 93       	push	r24
      780:	f1 d2       	rcall	.+1506   	; 0xd64 <printf>
-        printf("Started pressing at %d\n", start_pressed);
+        PRINTF("Started pressing at %d\n", start_pressed);
      782:	80 91 d7 00 	lds	r24, 0x00D7	; 0x8000d7 <__data_end+0x7>
      786:	8f 93       	push	r24
      788:	80 91 d6 00 	lds	r24, 0x00D6	; 0x8000d6 <__data_end+0x6>
@@ -1238,7 +1240,7 @@ ISR(INT0_vect)
      7b6:	9f 93       	push	r25
      7b8:	8f 93       	push	r24
      7ba:	d4 d2       	rcall	.+1448   	; 0xd64 <printf>
-        printf("diff %d\n", (g_millisecs - start_pressed));
+        PRINTF("diff %d\n", (g_millisecs - start_pressed));
      7bc:	20 91 d9 00 	lds	r18, 0x00D9	; 0x8000d9 <g_millisecs>
      7c0:	30 91 da 00 	lds	r19, 0x00DA	; 0x8000da <g_millisecs+0x1>
      7c4:	40 91 db 00 	lds	r20, 0x00DB	; 0x8000db <g_millisecs+0x2>

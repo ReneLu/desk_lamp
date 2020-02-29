@@ -14,7 +14,9 @@
 #include <stdbool.h>
 
 #include "lib/ws2812/light_ws2812.h"
+#ifdef DEBUG
 #include "lib/printf/printf.h"
+#endif
 
 #define STRIP_LEN       45
 
@@ -25,6 +27,12 @@
 #define BRIGHTNESS      1.0
 #define HOLD_TIME_MS    2000
 
+#ifdef DEBUG
+#define PRINTF(str, ...)    printf((str), ##__VA_ARGS__)
+#endif
+#ifdef NDEBUG
+#define PRINTF(str, ...)
+#endif
 
 enum _lampState
 {
@@ -75,7 +83,9 @@ int main(void)
     ioinit();
     timer_init();
     int0_init();
+#ifdef DEBUG
     printf_init(BAUD, F_CPU);
+#endif
     
     for(uint8_t i = 0; i < STRIP_LEN; i++) {
         led[i].r=255;led[i].g=100;led[i].b=0;
@@ -86,7 +96,7 @@ int main(void)
     // Enable Interrupts after Initialization
     sei();
 
-    printf("Hello World!\n");
+    PRINTF("Hello World!\n");
 
     while(1)
     {     
@@ -111,7 +121,7 @@ int main(void)
                 if (brightness > 1)
                     brightness = 0;
                 set_light(brightness);
-                printf("New Brightness %i\n", (100*brightness));
+                PRINTF("New Brightness %i\n", (100*brightness));
                 _delay_ms(100);
                 break;
             default:
@@ -200,12 +210,12 @@ ISR (TIMER1_COMPA_vect)
 ISR(INT0_vect)
 {
     if (TOUCH_PIN & (1 << TOUCH_PIN_NR)) { // Rising Edge Interrupt
-        printf("Rising at %d\n", g_millisecs);
+        PRINTF("Rising at %d\n", g_millisecs);
         start_pressed = g_millisecs;
     } else {        // Falling Edge Interrupt
-        printf("Falling at %d\n", g_millisecs);
-        printf("Started pressing at %d\n", start_pressed);
-        printf("diff %d\n", (g_millisecs - start_pressed));
+        PRINTF("Falling at %d\n", g_millisecs);
+        PRINTF("Started pressing at %d\n", start_pressed);
+        PRINTF("diff %d\n", (g_millisecs - start_pressed));
         if (g_millisecs - start_pressed < HOLD_TIME_MS) {
             if (lamp_state == LIGHT_OFF)
                 lamp_state = LIGHT_TUNR_ON;
