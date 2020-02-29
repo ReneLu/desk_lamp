@@ -732,8 +732,8 @@ int main(void)
      3d4:	df 01       	movw	r26, r30
      3d6:	11 97       	sbiw	r26, 0x01	; 1
    
-    for(uint8_t i = 0; i < STRIP_LEN; i++) {
-        led[i].r=0;led[i].g=0;led[i].b=0;
+   for(uint8_t i = 0; i < STRIP_LEN; i++) {
+       led[i].r=0;led[i].g=0;led[i].b=0;
      3d8:	1c 92       	st	X, r1
      3da:	11 97       	sbiw	r26, 0x01	; 1
      3dc:	1c 92       	st	X, r1
@@ -744,12 +744,12 @@ int main(void)
     // Disable Interrupts during Initialization
     cli();
    
-    for(uint8_t i = 0; i < STRIP_LEN; i++) {
+   for(uint8_t i = 0; i < STRIP_LEN; i++) {
      3e2:	e8 15       	cp	r30, r8
      3e4:	f9 05       	cpc	r31, r9
      3e6:	b1 f7       	brne	.-20     	; 0x3d4 <main+0x14>
-        led[i].r=0;led[i].g=0;led[i].b=0;
-    }    
+       led[i].r=0;led[i].g=0;led[i].b=0;
+   } 
     
     ioinit();
      3e8:	c7 de       	rcall	.-626    	; 0x178 <ioinit>
@@ -785,7 +785,7 @@ int main(void)
 #endif
     
     for(uint8_t i = 0; i < STRIP_LEN; i++) {
-        led[i].r=255;led[i].g=100;led[i].b=0;
+        led[i].r=LED_COLOR_R;led[i].g=LED_COLOR_G;led[i].b=LED_COLOR_B;
      41c:	9f ef       	ldi	r25, 0xFF	; 255
      41e:	84 e6       	ldi	r24, 0x64	; 100
      420:	fe 01       	movw	r30, r28
@@ -804,7 +804,7 @@ int main(void)
      42e:	c8 15       	cp	r28, r8
      430:	d9 05       	cpc	r29, r9
      432:	b1 f7       	brne	.-20     	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
-        led[i].r=255;led[i].g=100;led[i].b=0;
+        led[i].r=LED_COLOR_R;led[i].g=LED_COLOR_G;led[i].b=LED_COLOR_B;
     }
     
     set_light(0);

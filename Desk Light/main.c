@@ -27,6 +27,10 @@
 #define BRIGHTNESS      1.0
 #define HOLD_TIME_MS    2000
 
+#define LED_COLOR_R     255
+#define LED_COLOR_G     100
+#define LED_COLOR_B     0
+
 #ifdef DEBUG
 #define PRINTF(str, ...)    printf((str), ##__VA_ARGS__)
 #endif
@@ -76,9 +80,9 @@ int main(void)
     // Disable Interrupts during Initialization
     cli();
    
-    for(uint8_t i = 0; i < STRIP_LEN; i++) {
-        led[i].r=0;led[i].g=0;led[i].b=0;
-    }    
+   for(uint8_t i = 0; i < STRIP_LEN; i++) {
+       led[i].r=0;led[i].g=0;led[i].b=0;
+   } 
     
     ioinit();
     timer_init();
@@ -88,7 +92,7 @@ int main(void)
 #endif
     
     for(uint8_t i = 0; i < STRIP_LEN; i++) {
-        led[i].r=255;led[i].g=100;led[i].b=0;
+        led[i].r=LED_COLOR_R;led[i].g=LED_COLOR_G;led[i].b=LED_COLOR_B;
     }
     
     set_light(0);
